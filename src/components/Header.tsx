@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Corrigido aqui
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,7 +18,7 @@ const Header = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuMenuOpen(false);
+      setIsMobileMenuOpen(false); // Corrigido aqui
     }
   };
 
@@ -72,17 +72,17 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsMobileMenuMenuOpen(!isMobileMenuMenuOpen)}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} // Corrigido aqui
             className="md:hidden p-2 text-foreground"
           >
-            {isMobileMenuMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
 
         {/* Mobile Menu */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isMobileMenuMenuOpen ? 'max-h-64 pb-4' : 'max-h-0'
+            isMobileMenuOpen ? 'max-h-64 pb-4' : 'max-h-0' // Corrigido aqui
           }`}
         >
           <nav className="flex flex-col gap-4">
