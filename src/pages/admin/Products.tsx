@@ -1,0 +1,337 @@
+import { useState, useEffect } from 'react';
+import AdminLayout from '@/components/admin/AdminLayout';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { toast } from 'sonner';
+import { Plus, Pencil, Trash2, Loader2, X } from 'lucide-react';
+
+interface Product {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  image_url: string | null;
+  badge: string | null;
+  is_active: boolean;
+  display_order: number;
+}
+
+const Products = () => {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    description: '',
+    price: '',
+    badge: '',
+    is_active: true,
+    display_order: 0,
+  });
+
+  const fetchProducts = async () => {
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .order('display_order');
+    
+    if (error) {
+      toast.error('Erro ao carregar produtos');
+    } else {
+      setProducts(data || []);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      description: '',
+      price: '',
+      badge: '',
+      is_active: true,
+      display_order: products.length,
+    });
+    setEditingProduct(null);
+    setShowForm(false);
+  };
+
+  const handleEdit = (product: Product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      description: product.description || '',
+      price: product.price.toString(),
+      badge: product.badge || '',
+      is_active: product.is_active,
+      display_order: product.display_order,
+    });
+    setShowForm(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+
+    const productData = {
+      name: formData.name,
+      description: formData.description || null,
+      price: parseFloat(formData.price),
+      badge: formData.badge || null,
+      is_active: formData.is_active,
+      display_order: formData.display_order,
+    };
+
+    if (editingProduct) {
+      const { error } = await supabase
+        .from('products')
+        .update(productData)
+        .eq('id', editingProduct.id);
+
+      if (error) {
+        toast.error('Erro ao atualizar produto');
+      } else {
+        toast.success('Produto atualizado!');
+        resetForm();
+        fetchProducts();
+      }
+    } else {
+      const { error } = await supabase
+        .from('products')
+        .insert([productData]);
+
+      if (error) {
+        toast.error('Erro ao criar produto');
+      } else {
+        toast.success('Produto criado!');
+        resetForm();
+        fetchProducts();
+      }
+    }
+
+    setSaving(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Tem certeza que deseja excluir este produto?')) return;
+
+    const { error } = await supabase.from('products').delete().eq('id', id);
+
+    if (error) {
+      toast.error('Erro ao excluir produto');
+    } else {
+      toast.success('Produto excluído!');
+      fetchProducts();
+    }
+  };
+
+  const toggleActive = async (product: Product) => {
+    const { error } = await supabase
+      .from('products')
+      .update({ is_active: !product.is_active })
+      .eq('id', product.id);
+
+    if (error) {
+      toast.error('Erro ao atualizar produto');
+    } else {
+      fetchProducts();
+    }
+  };
+
+  return (
+    <AdminLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground">Produtos</h1>
+            <p className="text-muted-foreground mt-1">Gerencie os sabores de açaí</p>
+          </div>
+          <Button
+            onClick={() => {
+              resetForm();
+              setShowForm(true);
+            }}
+            className="bg-primary hover:bg-primary/90"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Novo Produto
+          </Button>
+        </div>
+
+        {/* Form Modal */}
+        {showForm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-foreground/50" onClick={resetForm} />
+            <div className="relative bg-card rounded-2xl p-6 w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
+              <button
+                onClick={resetForm}
+                className="absolute top-4 right-4 p-2 rounded-full hover:bg-secondary"
+              >
+                <X className="w-4 h-4" />
+              </button>
+              
+              <h2 className="text-xl font-bold text-foreground mb-6">
+                {editingProduct ? 'Editar Produto' : 'Novo Produto'}
+              </h2>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nome *</Label>
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Ex: Açaí Tradicional"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">Descrição</Label>
+                  <Textarea
+                    id="description"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Descrição do produto..."
+                    rows={3}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="price">Preço Base (R$) *</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={formData.price}
+                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                    placeholder="12.00"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="badge">Badge (opcional)</Label>
+                  <Input
+                    id="badge"
+                    value={formData.badge}
+                    onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                    placeholder="Ex: Mais Pedido, Novidade"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="order">Ordem de exibição</Label>
+                  <Input
+                    id="order"
+                    type="number"
+                    min="0"
+                    value={formData.display_order}
+                    onChange={(e) => setFormData({ ...formData, display_order: parseInt(e.target.value) || 0 })}
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="active">Ativo</Label>
+                  <Switch
+                    id="active"
+                    checked={formData.is_active}
+                    onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <Button type="button" variant="outline" onClick={resetForm} className="flex-1">
+                    Cancelar
+                  </Button>
+                  <Button type="submit" disabled={saving} className="flex-1 bg-primary">
+                    {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Salvar'}
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Products List */}
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
+          {loading ? (
+            <div className="p-8 text-center">
+              <Loader2 className="w-6 h-6 animate-spin mx-auto text-primary" />
+            </div>
+          ) : products.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
+              Nenhum produto cadastrado
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {products.map((product) => (
+                <div key={product.id} className="p-4 flex items-center justify-between hover:bg-secondary/30">
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <span className="text-2xl">🍇</span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-semibold text-foreground">{product.name}</h3>
+                        {product.badge && (
+                          <span className="text-xs bg-accent text-accent-foreground px-2 py-0.5 rounded-full">
+                            {product.badge}
+                          </span>
+                        )}
+                        {!product.is_active && (
+                          <span className="text-xs bg-muted text-muted-foreground px-2 py-0.5 rounded-full">
+                            Inativo
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        R$ {product.price.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      checked={product.is_active}
+                      onCheckedChange={() => toggleActive(product)}
+                    />
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleEdit(product)}
+                    >
+                      <Pencil className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleDelete(product.id)}
+                      className="text-destructive hover:text-destructive"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </AdminLayout>
+  );
+};
+
+export default Products;
