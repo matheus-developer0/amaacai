@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false); // Corrigido aqui
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,11 +18,11 @@ const Header = () => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      setIsMobileMenuOpen(false); // Corrigido aqui
+      setIsMobileMenuOpen(false);
     }
   };
 
-  const whatsappNumber = '77981336827'; // Número de WhatsApp integrado
+  const whatsappNumber = '5577981336827'; // Número de WhatsApp integrado com código do país (55)
   const whatsappMessage = encodeURIComponent('Olá, gostaria de fazer um pedido!');
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
@@ -72,7 +72,7 @@ const Header = () => {
 
           {/* Mobile Menu Button */}
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} // Corrigido aqui
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 text-foreground"
           >
             {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -82,7 +82,7 @@ const Header = () => {
         {/* Mobile Menu */}
         <div
           className={`md:hidden overflow-hidden transition-all duration-300 ${
-            isMobileMenuOpen ? 'max-h-64 pb-4' : 'max-h-0' // Corrigido aqui
+            isMobileMenuOpen ? 'max-h-64 pb-4' : 'max-h-0'
           }`}
         >
           <nav className="flex flex-col gap-4">

@@ -1,7 +1,7 @@
 import { MessageCircle, Clock, MapPin, Instagram } from 'lucide-react';
 
 const Footer = () => {
-  const whatsappNumber = '77981336827';
+  const whatsappNumber = '5577981336827'; // Número de WhatsApp integrado com código do país (55)
   const whatsappMessage = encodeURIComponent('Olá, gostaria de fazer um pedido!');
   const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
 
