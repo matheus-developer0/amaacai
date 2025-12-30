@@ -22,6 +22,10 @@ const Header = () => {
     }
   };
 
+  const whatsappNumber = '77981336827';
+  const whatsappMessage = encodeURIComponent('Olá, gostaria de fazer um pedido!');
+  const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -56,12 +60,14 @@ const Header = () => {
             >
               Combos
             </button>
-            <Button
-              className="btn-glow bg-accent hover:bg-accent/90 text-accent-foreground gap-2"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Pedir no WhatsApp
-            </Button>
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              <Button
+                className="btn-glow bg-accent hover:bg-accent/90 text-accent-foreground gap-2"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Pedir no WhatsApp
+              </Button>
+            </a>
           </nav>
 
           {/* Mobile Menu Button */}
@@ -92,12 +98,14 @@ const Header = () => {
             >
               Combos
             </button>
-            <Button
-              className="btn-glow bg-accent hover:bg-accent/90 text-accent-foreground gap-2 w-full"
-            >
-              <MessageCircle className="w-4 h-4" />
-              Pedir no WhatsApp
-            </Button>
+            <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+              <Button
+                className="btn-glow bg-accent hover:bg-accent/90 text-accent-foreground gap-2 w-full"
+              >
+                <MessageCircle className="w-4 h-4" />
+                Pedir no WhatsApp
+              </Button>
+            </a>
           </nav>
         </div>
       </div>
