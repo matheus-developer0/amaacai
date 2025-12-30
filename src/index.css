@@ -127,18 +127,23 @@
   }
   
   .btn-glow {
-    @apply relative overflow-hidden;
+    @apply relative overflow-hidden transition-all duration-300 ease-out; /* Adicionado transition */
     box-shadow: var(--shadow-button);
   }
   
   .btn-glow::before {
     content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full;
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full; /* Opacidade do glow aumentada */
     transition: transform 0.6s ease;
   }
   
   .btn-glow:hover::before {
     @apply translate-x-full;
+  }
+
+  .btn-glow:hover { /* Efeito de levantar e sombra mais forte no hover */
+    transform: scale(1.02);
+    box-shadow: var(--shadow-card-hover);
   }
 }
 
