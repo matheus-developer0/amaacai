@@ -42,7 +42,7 @@ const Header = () => {
               <span className="text-primary-foreground font-bold text-lg md:text-xl">A</span>
             </div>
             <span className="font-bold text-xl md:text-2xl text-foreground">
-              Açaí<span className="text-primary">ria</span>
+              Amaaçaí
             </span>
           </div>
 

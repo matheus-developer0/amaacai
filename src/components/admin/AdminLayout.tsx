@@ -88,7 +88,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
               <span className="text-xl">🍇</span>
             </div>
             <div>
-              <h1 className="font-bold text-foreground">Açaí Admin</h1>
+              <h1 className="font-bold text-foreground">Amaaçaí Admin</h1>
               <p className="text-xs text-muted-foreground">Painel de Controle</p>
             </div>
           </Link>

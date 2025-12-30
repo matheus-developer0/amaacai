@@ -16,7 +16,7 @@ const Footer = () => {
                 <span className="text-primary-foreground font-bold text-lg">A</span>
               </div>
               <span className="font-bold text-xl text-background">
-                Açaí<span className="text-primary">ria</span>
+                Amaaçaí
               </span>
             </div>
             <p className="text-background/70 text-sm">
