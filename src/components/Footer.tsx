@@ -65,7 +65,7 @@ const Footer = () => {
         {/* Divider */}
         <div className="border-t border-background/20 pt-6">
           <p className="text-center text-background/50 text-sm">
-            © 2024 Açaíria. Todos os direitos reservados.
+            © 2026 Amaaçaí. Todos os direitos reservados.
           </p>
         </div>
       </div>
