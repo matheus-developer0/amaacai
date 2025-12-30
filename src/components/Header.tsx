@@ -39,7 +39,7 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg md:text-xl">A</span>
+              <span className="text-primary-foreground font-bold text-lg md:text-xl">🍇</span>
             </div>
             <span className="font-bold text-xl md:text-2xl text-foreground">
               Amaaçaí
